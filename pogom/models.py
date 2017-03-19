@@ -1847,7 +1847,9 @@ def parse_map(args, map_dict, step_location, db_update_queue, wh_update_queue,
                                     in args.encounter_whitelist or
                                     p['pokemon_data']['pokemon_id']
                                     not in args.encounter_blacklist and
-                                    not args.encounter_whitelist)):
+                                    not args.encounter_whitelist) and
+                                    p['pokemon_data']['pokemon_id']
+                                    not in args.pokemon_blacklist):
                 time.sleep(args.encounter_delay)
                 # Setup encounter request envelope.
                 req = api.create_request()
@@ -2075,6 +2077,12 @@ def parse_map(args, map_dict, step_location, db_update_queue, wh_update_queue,
     db_update_queue.put((ScannedLocation, {0: scan_loc}))
 
     if pokemon:
+        if len(args.pokemon_blacklist) > 0:
+            temp = pokemon
+            pokemon = {}
+            for key, p in temp.iteritems():
+                if p['pokemon_id'] not in args.pokemon_blacklist:
+                    pokemon[key] = p
         db_update_queue.put((Pokemon, pokemon))
     if pokestops:
         db_update_queue.put((Pokestop, pokestops))

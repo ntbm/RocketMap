@@ -169,6 +169,10 @@ def get_args():
                                 default='', help='File containing a list of '
                                                  'Pokemon to NOT encounter for'
                                                  ' more stats.')
+    parser.add_argument('-pb', '--pokemon_blacklist',
+                        action='append', default=[],
+                        help='List of Pokemon ids which should '
+                             'NOT be inserted into the db')
     parser.add_argument('-ld', '--login-delay',
                         help='Time delay between each login attempt.',
                         type=float, default=6)
@@ -645,6 +649,8 @@ def get_args():
             args.encounter_whitelist = [int(i) for i in
                                         args.encounter_whitelist]
 
+        args.pokemon_blacklist = [int(i) for i in
+                                    args.pokemon_blacklist]
         # Decide which scanning mode to use.
         if args.spawnpoint_scanning:
             args.scheduler = 'SpawnScan'
